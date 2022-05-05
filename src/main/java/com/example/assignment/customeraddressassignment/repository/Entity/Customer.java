@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -30,9 +30,9 @@ public class Customer {
     public String phoneNumber;
 
     @Column(name = "status")
-    public boolean status;
+    public Boolean status;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
-    private Set<Address> addresses;
+    private List<Address> addresses;
 
 }
