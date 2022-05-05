@@ -2,6 +2,7 @@ package com.example.assignment.customeraddressassignment.controller;
 
 import com.example.assignment.customeraddressassignment.beans.request.CustomerRequest;
 import com.example.assignment.customeraddressassignment.beans.response.ApplicationResponse;
+import com.example.assignment.customeraddressassignment.beans.response.CustomerAddressResponse;
 import com.example.assignment.customeraddressassignment.beans.response.CustomerResponse;
 import com.example.assignment.customeraddressassignment.service.CustomerAddressService;
 import io.swagger.annotations.ApiParam;
@@ -24,9 +25,33 @@ public class CustomerAddressController {
     @GetMapping("/customer/{customerId}")
     public CustomerResponse getCustomerById(
             @ApiParam(
-                    value = "Event Edition Id path variable",
+                    value = "Customer id path variable",
                     required = true)
             @PathVariable Long customerId) {
         return customerAddressService.getCustomerById(customerId);
     }
+
+    @DeleteMapping("/customer/{customerId}")
+    public void deleteByCustomerId(
+            @ApiParam(
+                    value = "Customer Id path variable",
+                    required = true)
+            @PathVariable Long customerId) {
+        customerAddressService.deleteCustomerById(customerId);
+    }
+
+    @PutMapping("/customer/{customerId}")
+    public ApplicationResponse updateByCustomerId(@ApiParam(
+            value = "Customer Id path variable",
+            required = true) @PathVariable Long customerId, @RequestBody CustomerRequest request) {
+        ApplicationResponse response = customerAddressService.updateCustomerById(customerId, request);
+        return response;
+    }
+
+    @GetMapping("/customers")
+    public CustomerAddressResponse findAllCustomer() {
+        CustomerAddressResponse response = customerAddressService.findAllCustomer();
+        return response;
+    }
+
 }
