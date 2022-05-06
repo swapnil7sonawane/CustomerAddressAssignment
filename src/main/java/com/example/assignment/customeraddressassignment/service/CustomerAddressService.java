@@ -12,7 +12,9 @@ import com.example.assignment.customeraddressassignment.repository.Entity.Addres
 import com.example.assignment.customeraddressassignment.repository.Entity.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -36,7 +38,6 @@ public class CustomerAddressService {
         customerRepository.save(customer);
 
         List<Customer> customers = customerRepository.findAll();
-        //log.info("Customer List {} :" + customers);
         addressRepository.saveAll(constructAddress(request, customer));
 
         ApplicationResponse response = new ApplicationResponse();
@@ -72,6 +73,9 @@ public class CustomerAddressService {
 
     public CustomerResponse getCustomerById(Long customerId) {
         Optional<Customer> customerOptional = customerRepository.findById(customerId);
+        if (customerOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Not Found");
+        }
         Customer customer = customerOptional.get();
         CustomerResponse customerResponse = new CustomerResponse();
         List<Address> addressList = addressRepository.findByCustomerId(customerId);

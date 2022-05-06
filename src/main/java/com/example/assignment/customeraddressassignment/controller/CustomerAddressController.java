@@ -1,5 +1,6 @@
 package com.example.assignment.customeraddressassignment.controller;
 
+import com.example.assignment.customeraddressassignment.ValidationConstants;
 import com.example.assignment.customeraddressassignment.beans.request.CustomerRequest;
 import com.example.assignment.customeraddressassignment.beans.response.ApplicationResponse;
 import com.example.assignment.customeraddressassignment.beans.response.CustomerAddressResponse;
@@ -7,9 +8,13 @@ import com.example.assignment.customeraddressassignment.beans.response.CustomerR
 import com.example.assignment.customeraddressassignment.service.CustomerAddressService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
+@Validated
 @RequestMapping("/api")
 public class CustomerAddressController {
 
@@ -17,16 +22,17 @@ public class CustomerAddressController {
     private CustomerAddressService customerAddressService;
 
     @PostMapping("/customer")
-    public ApplicationResponse saveCustomer(@RequestBody CustomerRequest request) {
-        ApplicationResponse response = customerAddressService.saveCustomerDetails(request);
-        return response;
+    public ApplicationResponse saveCustomer(@Valid @RequestBody CustomerRequest request) {
+        return customerAddressService.saveCustomerDetails(request);
     }
 
     @GetMapping("/customer/{customerId}")
     public CustomerResponse getCustomerById(
             @ApiParam(
                     value = "Customer id path variable",
-                    required = true)
+                    required = true,
+                    format = ValidationConstants.NAME_REGEX, allowEmptyValue = false,
+                    example = "1L")
             @PathVariable Long customerId) {
         return customerAddressService.getCustomerById(customerId);
     }
@@ -43,7 +49,7 @@ public class CustomerAddressController {
     @PutMapping("/customer/{customerId}")
     public ApplicationResponse updateByCustomerId(@ApiParam(
             value = "Customer Id path variable",
-            required = true) @PathVariable Long customerId, @RequestBody CustomerRequest request) {
+            required = true) @PathVariable Long customerId, @Valid @RequestBody CustomerRequest request) {
         ApplicationResponse response = customerAddressService.updateCustomerById(customerId, request);
         return response;
     }
